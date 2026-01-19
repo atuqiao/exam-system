@@ -1,0 +1,254 @@
+/* app.wxss */
+page {
+  background-color: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #333;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* 安全区域适配 */
+.page-safe-area {
+  min-height: 100vh;
+  min-height: calc(100vh - env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: constant(safe-area-inset-bottom);
+}
+
+/* 主题变量 */
+.theme-primary-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.theme-secondary-gradient {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.theme-success {
+  background: #07c160;
+}
+
+.theme-bg-light {
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+}
+
+.theme-bg-gradient {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+/* 通用样式 */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+}
+
+.btn {
+  width: 400rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 28rpx;
+  border: none;
+  border-radius: 8rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 4rpx rgba(102, 126, 234, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #667eea;
+  border: 1rpx solid #667eea;
+}
+
+/* 标签样式 */
+.tag {
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  font-size: 22rpx;
+  display: inline-block;
+  transition: all 0.3s;
+}
+
+.tag:active {
+  transform: scale(0.95);
+}
+
+.tag-primary {
+  background: #e8f5e9;
+  color: #07c160;
+}
+
+.tag-secondary {
+  background: #f5f5f5;
+  color: #999;
+}
+
+/* 卡片样式 */
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.card:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.12);
+}
+
+/* 分割线 */
+.divider {
+  height: 20rpx;
+  background: #f5f7fa;
+}
+
+/* 加载状态 */
+.loading {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.loading::before {
+  content: '⏳';
+  display: block;
+  font-size: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty::before {
+  content: '📭';
+  display: block;
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 通用选择框样式 */
+.picker-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6rpx 20rpx;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 10rpx;
+  border: 2rpx solid #e8e8e8;
+  min-height: 52rpx;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 10;
+  min-width: 150rpx;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.picker-content.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+}
+
+.picker-content.active .filter-value,
+.picker-content.active .dropdown-arrow {
+  color: white;
+}
+
+.filter-value {
+  font-size: 30rpx;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200rpx;
+}
+
+.filter-value.selected {
+  color: #07c160;
+}
+
+.picker-content.active .filter-value.selected {
+  color: white;
+}
+
+.dropdown-arrow {
+  font-size: 20rpx;
+  color: #999;
+  transition: transform 0.3s;
+  margin-left: 8rpx;
+  flex-shrink: 0;
+}
+
+.dropdown-arrow.up {
+  transform: rotate(180deg);
+}
+
+/* 下拉菜单样式 */
+.dropdown-menu {
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  background: white;
+  border-radius: 10rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  max-height: 300rpx;
+  overflow: hidden;
+  z-index: 100;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  margin-top: -10rpx;
+}
+
+.dropdown-menu.show {
+  transform: translateY(0);
+  opacity: 1;
+  padding: 10rpx 0;
+}
+
+.dropdown-scroll {
+  max-height: 300rpx;
+}
+
+.dropdown-item {
+  padding: 16rpx 20rpx;
+  font-size: 30rpx;
+  color: #333;
+  border-radius: 8rpx;
+  margin: 0 10rpx;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+.dropdown-item:active {
+  background: #f5f5f5;
+}
+
+.dropdown-item.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 500;
+}

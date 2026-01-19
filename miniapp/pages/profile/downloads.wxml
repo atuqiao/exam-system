@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="header">
+    <text class="title">下载记录</text>
+    <text class="subtitle">共 {{total}} 次下载</text>
+  </view>
+
+  <!-- 下载记录列表 -->
+  <view class="download-list">
+    <view class="download-item" wx:for="{{downloadList}}" wx:key="id">
+      <view class="item-header">
+        <text class="exam-title">{{item.exam_title}}</text>
+      </view>
+
+      <view class="item-info">
+        <view class="info-row">
+          <text class="info-label">地区：</text>
+          <text class="info-value">{{item.city_name}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">年级：</text>
+          <text class="info-value">{{item.grade_name}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">科目：</text>
+          <text class="info-value">{{item.subject_name}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.year}}">
+          <text class="info-label">年份：</text>
+          <text class="info-value">{{item.year}}年 {{item.semester}}</text>
+        </view>
+      </view>
+
+      <view class="item-footer">
+        <text class="download-time">下载于 {{item.download_time_text}}</text>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore && downloadList.length > 0}}" bindtap="loadMore">
+      <text>{{loading ? '加载中...' : '加载更多'}}</text>
+    </view>
+
+    <!-- 暂无数据 -->
+    <view class="empty" wx:if="{{downloadList.length === 0 && !loading}}">
+      <view class="empty-icon">📥</view>
+      <text class="empty-text">暂无下载记录</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading && downloadList.length === 0}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>

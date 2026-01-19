@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台 - 首页</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 250px;
+      background: #2c3e50;
+      color: white;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #34495e;
+    }
+
+    .sidebar-header h2 {
+      font-size: 18px;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 20px 0;
+    }
+
+    .nav-menu li {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .nav-menu li:hover,
+    .nav-menu li.active {
+      background: #34495e;
+    }
+
+    .nav-menu li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      padding: 8px 16px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card h3 {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .content-area {
+      display: none;
+    }
+
+    .content-area.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>资料管理系统</h2>
+    </div>
+    <ul class="nav-menu">
+      <li class="active" onclick="showPage('dashboard')">
+        <a href="#">首页</a>
+      </li>
+      <li onclick="showPage('cities')">
+        <a href="#">城市管理</a>
+      </li>
+      <li onclick="showPage('grades')">
+        <a href="#">年级管理</a>
+      </li>
+      <li onclick="showPage('subjects')">
+        <a href="#">科目管理</a>
+      </li>
+      <li onclick="showPage('tags')">
+        <a href="#">标签管理</a>
+      </li>
+      <li onclick="showPage('exams')">
+        <a href="#">试卷管理</a>
+      </li>
+      <li onclick="showPage('users')">
+        <a href="#">用户管理</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h1 id="pageTitle">数据概览</h1>
+      <div class="user-info">
+        <span id="username"></span>
+        <button class="logout-btn" onclick="logout()">退出登录</button>
+      </div>
+    </div>
+
+    <!-- 首页 -->
+    <div id="dashboard" class="content-area active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>用户总数</h3>
+          <div class="number" id="userCount">-</div>
+        </div>
+        <div class="stat-card">
+          <h3>试卷总数</h3>
+          <div class="number" id="examCount">-</div>
+        </div>
+        <div class="stat-card">
+          <h3>下载次数</h3>
+          <div class="number" id="downloadCount">-</div>
+        </div>
+        <div class="stat-card">
+          <h3>城市数量</h3>
+          <div class="number" id="cityCount">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 其他页面内容将通过 iframe 加载 -->
+    <div id="cities" class="content-area"></div>
+    <div id="grades" class="content-area"></div>
+    <div id="subjects" class="content-area"></div>
+    <div id="tags" class="content-area"></div>
+    <div id="exams" class="content-area"></div>
+    <div id="users" class="content-area"></div>
+  </div>
+
+  <script>
+    // 检查登录状态
+    const token = localStorage.getItem('adminToken');
+    const username = localStorage.getItem('adminUsername');
+
+    if (!token) {
+      window.location.href = '/admin/index.html';
+    }
+
+    document.getElementById('username').textContent = username;
+
+    // 显示页面
+    function showPage(page) {
+      // 更新导航激活状态
+      document.querySelectorAll('.nav-menu li').forEach(li => {
+        li.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+
+      // 隐藏所有内容区域
+      document.querySelectorAll('.content-area').forEach(area => {
+        area.classList.remove('active');
+      });
+
+      // 显示选中的页面
+      const pageElement = document.getElementById(page);
+      pageElement.classList.add('active');
+
+      // 更新标题
+      const titles = {
+        dashboard: '数据概览',
+        cities: '城市管理',
+        grades: '年级管理',
+        subjects: '科目管理',
+        tags: '标签管理',
+        exams: '试卷管理',
+        users: '用户管理'
+      };
+      document.getElementById('pageTitle').textContent = titles[page];
+
+      // 如果不是首页，加载对应页面
+      if (page !== 'dashboard') {
+        loadPageContent(page);
+      }
+    }
+
+    // 加载页面内容
+    function loadPageContent(page) {
+      const pageElement = document.getElementById(page);
+      pageElement.innerHTML = `<iframe src="${page}.html" style="width:100%;height:calc(100vh - 150px);border:none;"></iframe>`;
+    }
+
+    // 加载统计数据
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/admin/stats/overview', {
+          headers: {
+            'admin-token': token
+          }
+        });
+
+        const result = await response.json();
+
+        if (result.code === 200) {
+          document.getElementById('userCount').textContent = result.data.userCount;
+          document.getElementById('examCount').textContent = result.data.examCount;
+          document.getElementById('downloadCount').textContent = result.data.downloadCount;
+          document.getElementById('cityCount').textContent = result.data.cityCount;
+        }
+      } catch (error) {
+        console.error('加载统计数据失败:', error);
+      }
+    }
+
+    // 退出登录
+    function logout() {
+      if (confirm('确定要退出登录吗？')) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUsername');
+        window.location.href = '/admin/index.html';
+      }
+    }
+
+    // 初始化
+    loadStats();
+  </script>
+</body>
+</html>

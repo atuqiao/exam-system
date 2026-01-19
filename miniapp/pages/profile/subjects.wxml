@@ -1,0 +1,40 @@
+<view class="container">
+  <view class="header">
+    <text class="title">已开通科目</text>
+    <text class="subtitle">共 {{subjectList.length}} 个科目</text>
+  </view>
+
+  <!-- 已开通科目列表 -->
+  <view class="subject-list">
+    <view class="subject-item" wx:for="{{subjectList}}" wx:key="id">
+      <view class="item-header">
+        <view class="subject-info">
+          <text class="city-name">{{item.city_name}}</text>
+          <text class="grade-name">{{item.grade_name}}</text>
+          <text class="subject-name">{{item.subject_name}}</text>
+        </view>
+        <view class="status-badge active">
+          <text>已开通</text>
+        </view>
+      </view>
+
+      <view class="item-footer">
+        <text class="open-time">开通于 {{item.open_time_text}}</text>
+      </view>
+    </view>
+
+    <!-- 暂无数据 -->
+    <view class="empty" wx:if="{{subjectList.length === 0 && !loading}}">
+      <view class="empty-icon">📚</view>
+      <text class="empty-text">暂无已开通科目</text>
+      <view class="empty-tip">
+        <text>去试卷页面选择科目开通吧</text>
+      </view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>

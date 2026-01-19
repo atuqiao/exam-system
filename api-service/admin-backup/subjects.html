@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科目管理</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; background: #f5f5f5; }
+    .toolbar { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+    .toolbar input, .toolbar select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
+    .btn:hover { opacity: 0.8; }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-danger { background: #e74c3c; color: white; }
+    .table-container { background: white; border-radius: 10px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f8f9fa; font-weight: 600; }
+    tr:hover { background: #f8f9fa; }
+    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+    .status-active { background: #d4edda; color: #155724; }
+    .status-inactive { background: #f8d7da; color: #721c24; }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+    .modal.active { display: flex; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 10px; width: 500px; max-width: 90%; max-height: 90vh; overflow-y: auto; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="搜索...">
+    <select id="statusSelect">
+      <option value="">全部状态</option>
+      <option value="1">启用</option>
+      <option value="0">禁用</option>
+    </select>
+    <button class="btn btn-primary" onclick="search()">搜索</button>
+    <button class="btn btn-primary" onclick="showCreateModal()">添加</button>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAll"></th>
+          <th>ID</th><th>科目名称</th><th>图标</th><th>排序</th><th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <div class="modal" id="formModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">添加</h2>
+      </div>
+      <form id="dataForm">
+        <input type="hidden" id="itemId">
+        
+          <div class="form-group">
+            <label>科目名称</label>
+            <input type="text" id="name" required>
+          </div>
+        
+          <div class="form-group">
+            <label>图标URL</label>
+            <input type="text" id="icon" >
+          </div>
+        
+          <div class="form-group">
+            <label>排序顺序</label>
+            <input type="number" id="sort_order" value="0" >
+          </div>
+        
+          <div class="form-group">
+            <label>状态</label>
+            <select id="status" >
+        <option value="1">启用</option><option value="0">禁用</option>
+      </select>
+          </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeModal()">取消</button>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api/admin/subjects';
+    const token = parent.localStorage.getItem('adminToken');
+    let currentPage = 1;
+    let pageSize = 20;
+
+    async function loadData(page = 1) {
+      currentPage = page;
+      const searchKeyword = document.getElementById('searchInput').value;
+      const status = document.getElementById('statusSelect').value;
+
+      try {
+        const response = await fetch(API_BASE + '/list', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'admin-token': token },
+          body: JSON.stringify({ page, pageSize, keyword: searchKeyword || undefined, status: status !== '' ? parseInt(status) : undefined })
+        });
+        const result = await response.json();
+        if (result.code === 200) {
+          renderTable(result.data.list);
+          renderPagination(result.data.pagination);
+        }
+      } catch (error) {
+        console.error('加载数据失败:', error);
+        alert('加载数据失败');
+      }
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = list.map(item => {
+        let html = '<tr>';
+        html += '<td><input type="checkbox" class="row-checkbox" data-id="' + item.id + '"></td>';
+        html += '<td>' + (item.id || '-') + '</td>';
+        html += '<td>' + (item.name || '-') + '</td>';
+        html += '<td>' + (item.icon || '-') + '</td>';
+        html += '<td>' + (item.sort_order || '-') + '</td>';
+        html += '<td><span class="status-badge ' + (item.status === 1 ? 'status-active' : 'status-inactive') + '">' + (item.status === 1 ? '启用' : '禁用') + '</span></td>';
+        html += '<td><button class="btn btn-primary" onclick="editItem(' + item.id + ')">编辑</button><button class="btn btn-danger" onclick="deleteItem(' + item.id + ')">删除</button></td>';
+        html += '</tr>';
+        return html;
+      }).join('');
+    }
+
+    function renderPagination(pagination) {
+      const div = document.getElementById('pagination');
+      const { page, totalPages, total } = pagination;
+      let html = `<span>共 ${total} 条，第 ${page}/${totalPages} 页</span>`;
+      if (page > 1) html += `<button class="btn" onclick="loadData(${page - 1})">上一页</button>`;
+      if (page < totalPages) html += `<button class="btn" onclick="loadData(${page + 1})">下一页</button>`;
+      div.innerHTML = html;
+    }
+
+    function search() { loadData(1); }
+
+    function showCreateModal() {
+      document.getElementById('modalTitle').textContent = '添加';
+      document.getElementById('dataForm').reset();
+      document.getElementById('itemId').value = '';
+      document.getElementById('formModal').classList.add('active');
+    }
+
+    async function editItem(id) {
+      try {
+        const response = await fetch(`${API_BASE}/${id}`, { headers: { 'admin-token': token } });
+        const result = await response.json();
+        if (result.code === 200) {
+          const item = result.data;
+          document.getElementById('modalTitle').textContent = '编辑';
+          document.getElementById('itemId').value = item.id;
+          document.getElementById('name').value = item.name || '';
+          document.getElementById('icon').value = item.icon || '';
+          document.getElementById('sort_order').value = item.sort_order || '';
+          document.getElementById('status').value = item.status;
+          document.getElementById('formModal').classList.add('active');
+        }
+      } catch (error) {
+        console.error('加载数据失败:', error);
+        alert('加载数据失败');
+      }
+    }
+
+    async function deleteItem(id) {
+      if (!confirm('确定要删除吗？')) return;
+      try {
+        const response = await fetch(`${API_BASE}/${id}`, { method: 'DELETE', headers: { 'admin-token': token } });
+        const result = await response.json();
+        if (result.code === 200) {
+          alert('删除成功');
+          loadData(currentPage);
+        } else {
+          alert(result.message || '删除失败');
+        }
+      } catch (error) {
+        console.error('删除失败:', error);
+        alert('删除失败');
+      }
+    }
+
+    function closeModal() { document.getElementById('formModal').classList.remove('active'); }
+
+    document.getElementById('dataForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('itemId').value;
+      const data = {
+        name: document.getElementById('name').value,
+        icon: document.getElementById('icon').value,
+        sort_order: parseInt(document.getElementById('sort_order').value),
+        status: document.getElementById('status').value
+      };
+      try {
+        const url = id ? `${API_BASE}/${id}` : API_BASE;
+        const method = id ? 'PUT' : 'POST';
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'admin-token': token },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.code === 200) {
+          alert('保存成功');
+          closeModal();
+          loadData(currentPage);
+        } else {
+          alert(result.message || '保存失败');
+        }
+      } catch (error) {
+        console.error('保存失败:', error);
+        alert('保存失败');
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

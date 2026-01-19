@@ -1,0 +1,227 @@
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  box-sizing: border-box;
+}
+
+/* 筛选区域 */
+.filter-section {
+  background: white;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  border-radius: 0 0 24rpx 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.filter-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-item {
+  flex: 0 1 auto;
+  min-width: 150rpx;
+}
+
+/* 标签行 */
+.tags-row {
+  margin-top: 10rpx;
+}
+
+.tags-scroll {
+  width: 100%;
+  white-space: normal;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10rpx 0;
+  gap: 16rpx;
+}
+
+.tag-item {
+  display: inline-block;
+  padding: 14rpx 28rpx;
+  background: #f0f0f0;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: #666;
+  transition: all 0.3s;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tag-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+}
+
+.tag-item:active {
+  transform: scale(0.95);
+}
+
+/* 遮罩层 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 50;
+  transition: background 0.3s;
+}
+
+.mask.show {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* 试卷列表滚动容器 */
+.exam-list-scroll {
+  flex: 1;
+  height: 0;
+  box-sizing: border-box;
+}
+
+/* 试卷列表 */
+.exam-list {
+  padding: 0 20rpx;
+  padding-bottom: 20rpx;
+}
+
+.exam-item {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.exam-item:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.12);
+}
+
+.exam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.exam-title {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+  margin-right: 16rpx;
+  word-break: break-all;
+}
+
+.exam-badge {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  font-size: 20rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+  box-shadow: 0 2rpx 8rpx rgba(240, 147, 251, 0.3);
+  white-space: nowrap;
+}
+
+.exam-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+
+.info-item {
+  font-size: 22rpx;
+  color: #666;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #e8e8e8;
+  white-space: nowrap;
+}
+
+.exam-meta {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.meta-item {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.exam-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  border: none;
+  font-weight: 500;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.12);
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.answer-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 30rpx;
+  color: #666;
+  font-size: 28rpx;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 加载中 */
+.loading {
+  text-align: center;
+  padding: 50rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

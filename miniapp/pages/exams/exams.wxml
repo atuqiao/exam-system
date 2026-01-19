@@ -1,0 +1,156 @@
+<view class="container">
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+
+    <!-- 第一行: 城市、年级、科目 -->
+    <view class="filter-row">
+      <view class="filter-item" bindtap="toggleDropdown" data-type="city">
+        <view class="picker-content {{showCityDropdown ? 'active' : ''}}">
+          <text class="filter-value {{selectedCity.id ? 'selected' : ''}}">
+            {{selectedCity.name || '城市'}}
+          </text>
+          <text class="dropdown-arrow {{showCityDropdown ? 'up' : ''}}">▼</text>
+        </view>
+      </view>
+
+      <view class="filter-item" bindtap="toggleDropdown" data-type="grade">
+        <view class="picker-content {{showGradeDropdown ? 'active' : ''}}">
+          <text class="filter-value {{selectedGrade.id ? 'selected' : ''}}">
+            {{selectedGrade.name || '年级'}}
+          </text>
+          <text class="dropdown-arrow {{showGradeDropdown ? 'up' : ''}}">▼</text>
+        </view>
+      </view>
+
+      <view class="filter-item" bindtap="toggleDropdown" data-type="subject">
+        <view class="picker-content {{showSubjectDropdown ? 'active' : ''}}">
+          <text class="filter-value {{selectedSubject.id ? 'selected' : ''}}">
+            {{selectedSubject.name || '科目'}}
+          </text>
+          <text class="dropdown-arrow {{showSubjectDropdown ? 'up' : ''}}">▼</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 城市下拉菜单 -->
+    <view class="dropdown-menu {{showCityDropdown ? 'show' : ''}}" wx:if="{{showCityDropdown}}">
+      <scroll-view scroll-y class="dropdown-scroll">
+        <view class="dropdown-item {{selectedCity.id === item.id ? 'selected' : ''}}"
+              wx:for="{{cities}}"
+              wx:key="id"
+              bindtap="selectCity"
+              data-item="{{item}}">
+          {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 年级下拉菜单 -->
+    <view class="dropdown-menu {{showGradeDropdown ? 'show' : ''}}" wx:if="{{showGradeDropdown}}">
+      <scroll-view scroll-y class="dropdown-scroll">
+        <view class="dropdown-item {{selectedGrade.id === item.id ? 'selected' : ''}}"
+              wx:for="{{grades}}"
+              wx:key="id"
+              bindtap="selectGrade"
+              data-item="{{item}}">
+          {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 科目下拉菜单 -->
+    <view class="dropdown-menu {{showSubjectDropdown ? 'show' : ''}}" wx:if="{{showSubjectDropdown}}">
+      <scroll-view scroll-y class="dropdown-scroll">
+        <view class="dropdown-item {{selectedSubject.id === item.id ? 'selected' : ''}}"
+              wx:for="{{subjects}}"
+              wx:key="id"
+              bindtap="selectSubject"
+              data-item="{{item}}">
+          {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 第二行: 区域标签（横向滚动选择） -->
+    <view class="tags-row" wx:if="{{selectedCity.id && allTags.length > 0}}">
+      <scroll-view scroll-x class="tags-scroll">
+        <view class="tags-container">
+          <view class="tag-item {{!selectedTag.id ? 'active' : ''}}"
+                bindtap="selectTag"
+                data-tag="all">
+            全部
+          </view>
+          <view class="tag-item {{selectedTag.id === item.id ? 'active' : ''}}"
+                wx:for="{{filteredTags}}"
+                wx:key="id"
+                bindtap="selectTag"
+                data-tag="{{item}}">
+            {{item.alias || item.name}}
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+  </view>
+
+  <!-- 试卷列表 -->
+  <scroll-view
+    class="exam-list-scroll"
+    scroll-y
+    bindscrolltolower="onReachBottom">
+
+    <view class="exam-list">
+      <view class="exam-item" wx:for="{{examList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="exam-header">
+          <text class="exam-title">{{item.title}}</text>
+          <text class="exam-badge" wx:if="{{item.featured}}">精选</text>
+        </view>
+
+        <view class="exam-info">
+          <text class="info-item">{{item.city_name}}</text>
+          <text class="info-item">{{item.grade_name}}</text>
+          <text class="info-item">{{item.subject_name}}</text>
+          <text class="info-item" wx:if="{{item.tag_alias}}">{{item.tag_alias}}</text>
+          <text class="info-item" wx:elif="{{item.tag_name}}">{{item.tag_name}}</text>
+        </view>
+
+        <view class="exam-meta">
+          <text class="meta-item">{{item.year}}年 {{item.semester}}</text>
+          <text class="meta-item">{{item.download_count}}次下载</text>
+        </view>
+
+        <view class="exam-actions">
+          <button class="action-btn download-btn" bindtap="onDownload" data-exam="{{item}}" catchtap="onDownload">
+            下载试卷
+          </button>
+          <button class="action-btn answer-btn" wx:if="{{item.answer_url}}" bindtap="onDownloadAnswer" data-exam="{{item}}" catchtap="onDownloadAnswer">
+            下载解析
+          </button>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore && examList.length > 0}}">
+        <text>下拉加载更多</text>
+      </view>
+
+      <!-- 没有更多了 -->
+      <view class="load-more" wx:if="{{!hasMore && examList.length > 0}}">
+        <text>没有更多了</text>
+      </view>
+
+      <!-- 暂无数据 -->
+      <view class="empty" wx:if="{{examList.length === 0 && !loading}}">
+        <text>暂无试卷数据</text>
+      </view>
+
+      <!-- 加载中 -->
+      <view class="loading" wx:if="{{loading}}">
+        <text>加载中...</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 遮罩层 -->
+  <view class="mask {{showDropdown ? 'show' : ''}}" bindtap="closeAllDropdowns" wx:if="{{showDropdown}}"></view>
+</view>

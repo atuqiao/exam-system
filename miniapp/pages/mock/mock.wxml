@@ -1,0 +1,119 @@
+<view class="container">
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+
+    <!-- 第一行: 城市、科目 -->
+    <view class="filter-row">
+      <view class="filter-item" bindtap="toggleDropdown" data-type="city">
+        <view class="picker-content {{showCityDropdown ? 'active' : ''}}">
+          <text class="filter-value {{selectedCity.id ? 'selected' : ''}}">
+            {{selectedCity.name || '城市'}}
+          </text>
+          <text class="dropdown-arrow {{showCityDropdown ? 'up' : ''}}">▼</text>
+        </view>
+      </view>
+
+      <view class="filter-item" bindtap="toggleDropdown" data-type="subject">
+        <view class="picker-content {{showSubjectDropdown ? 'active' : ''}}">
+          <text class="filter-value {{selectedSubject.id ? 'selected' : ''}}">
+            {{selectedSubject.name || '科目'}}
+          </text>
+          <text class="dropdown-arrow {{showSubjectDropdown ? 'up' : ''}}">▼</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 城市下拉菜单 -->
+    <view class="dropdown-menu {{showCityDropdown ? 'show' : ''}}" wx:if="{{showCityDropdown}}">
+      <scroll-view scroll-y class="dropdown-scroll">
+        <view class="dropdown-item {{selectedCity.id === item.id ? 'selected' : ''}}"
+              wx:for="{{cities}}"
+              wx:key="id"
+              bindtap="selectCity"
+              data-item="{{item}}">
+          {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 科目下拉菜单 -->
+    <view class="dropdown-menu {{showSubjectDropdown ? 'show' : ''}}" wx:if="{{showSubjectDropdown}}">
+      <scroll-view scroll-y class="dropdown-scroll">
+        <view class="dropdown-item {{selectedSubject.id === item.id ? 'selected' : ''}}"
+              wx:for="{{subjects}}"
+              wx:key="id"
+              bindtap="selectSubject"
+              data-item="{{item}}">
+          {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 第二行: 考试类型标签（中考/高考） -->
+    <view class="exam-type-section" wx:if="{{selectedCity.id}}">
+      <!-- 考试类型标签: 中考/高考 -->
+      <view class="exam-type-tags">
+        <view class="exam-type-tag {{selectedExamType.id === item.id ? 'active' : ''}}"
+              wx:for="{{examTypes}}"
+              wx:key="id"
+              bindtap="selectExamType"
+              data-type="{{item}}">
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 遮罩层 -->
+  <view class="mask {{showDropdown ? 'show' : ''}}" bindtap="closeAllDropdowns" wx:if="{{showDropdown}}"></view>
+
+  <!-- 模考试卷列表 -->
+  <view class="exam-list">
+    <view class="exam-item" wx:for="{{examList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="exam-header">
+        <text class="exam-title">{{item.title}}</text>
+        <view class="exam-badges">
+          <text class="exam-badge badge-mock" wx:if="{{item.exam_type_name === '模拟'}}">模拟</text>
+          <text class="exam-badge badge-real" wx:if="{{item.exam_type_name === '真题'}}">真题</text>
+          <text class="exam-badge badge-featured" wx:if="{{item.featured}}">精选</text>
+        </view>
+      </view>
+
+      <view class="exam-info">
+        <text class="info-item">{{item.city_name}}</text>
+        <text class="info-item">{{item.subject_name}}</text>
+        <text class="info-item" wx:if="{{item.tag_name}}">{{item.tag_name}}</text>
+      </view>
+
+      <view class="exam-meta">
+        <text class="meta-item">{{item.year}}年 {{item.semester}}</text>
+        <text class="meta-item">{{item.download_count}}次下载</text>
+      </view>
+
+      <view class="exam-actions">
+        <button class="action-btn download-btn" bindtap="onDownload" data-exam="{{item}}" catchtap="onDownload">
+          下载试卷
+        </button>
+        <button class="action-btn answer-btn" wx:if="{{item.answer_url}}" bindtap="onDownloadAnswer" data-exam="{{item}}" catchtap="onDownloadAnswer">
+          下载解析
+        </button>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore && examList.length > 0}}" bindtap="loadMore">
+      <text>加载更多</text>
+    </view>
+
+    <!-- 暂无数据 -->
+    <view class="empty" wx:if="{{examList.length === 0 && !loading}}">
+      <text>暂无模考数据</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>

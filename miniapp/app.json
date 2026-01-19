@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/exams/exams",
+    "pages/mock/mock",
+    "pages/login/login",
+    "pages/exams/detail",
+    "pages/profile/profile",
+    "pages/profile/downloads",
+    "pages/profile/contact",
+    "pages/profile/subjects",
+    "pages/picker/picker",
+    "pages/picker-test/picker-test"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "资料管理",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#7A7E83",
+    "selectedColor": "#07c160",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/exams/exams",
+        "iconPath": "static/tabbar/exam.png",
+        "selectedIconPath": "static/tabbar/exam-active.png",
+        "text": "试卷"
+      },
+      {
+        "pagePath": "pages/mock/mock",
+        "iconPath": "static/tabbar/mock.png",
+        "selectedIconPath": "static/tabbar/mock-active.png",
+        "text": "模考"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "static/tabbar/profile.png",
+        "selectedIconPath": "static/tabbar/profile-active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

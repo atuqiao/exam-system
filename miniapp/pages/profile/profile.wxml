@@ -1,0 +1,85 @@
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-avatar-section">
+      <image class="user-avatar" src="{{userInfo.avatarUrl || '/static/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-info">
+        <text class="user-name">{{userInfo.nickname || '未登录'}}</text>
+        <text class="user-invite" wx:if="{{userInfo.inviteCode}}">邀请码: {{userInfo.inviteCode}}</text>
+      </view>
+    </view>
+
+    <view class="user-points">
+      <view class="points-item">
+        <text class="points-value">{{userInfo.points || 0}}</text>
+        <text class="points-label">积分</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToDownloads">
+      <view class="menu-item-left">
+        <view class="menu-icon icon-download"></view>
+        <text class="menu-title">下载记录</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToSubjects">
+      <view class="menu-item-left">
+        <view class="menu-icon icon-subjects"></view>
+        <text class="menu-title">已开通科目</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToContact">
+      <view class="menu-item-left">
+        <view class="menu-icon icon-download"></view>
+        <text class="menu-title">下载方法</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 登录/退出按钮 -->
+  <view class="action-section">
+    <button wx:if="{{!userInfo.nickname}}" class="action-btn login-btn" bindtap="goToLogin">
+      立即登录
+    </button>
+    <button wx:else class="action-btn logout-btn" bindtap="handleLogout">
+      退出登录
+    </button>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-section">
+    <view class="stats-item">
+      <text class="stats-value">{{openedCount || 0}}</text>
+      <text class="stats-label">已开通科目</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{downloadCount || 0}}</text>
+      <text class="stats-label">下载次数</text>
+    </view>
+  </view>
+
+  <!-- 积分说明 -->
+  <view class="info-section">
+    <view class="info-title">积分规则</view>
+    <view class="info-item">
+      <text class="info-dot">•</text>
+      <text class="info-text">新用户注册赠送100积分</text>
+    </view>
+    <view class="info-item">
+      <text class="info-dot">•</text>
+      <text class="info-text">开通科目消耗50积分</text>
+    </view>
+    <view class="info-item">
+      <text class="info-dot">•</text>
+      <text class="info-text">已开通科目可永久下载该科目下的试卷</text>
+    </view>
+  </view>
+</view>
