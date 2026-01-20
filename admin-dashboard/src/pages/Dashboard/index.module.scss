@@ -1,0 +1,36 @@
+.dashboard {
+  .stat-card {
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .data-card,
+  .activity-card {
+    height: 100%;
+
+    .ant-list-item {
+      padding: 12px 0;
+    }
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .info-label {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    .info-value {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.85);
+    }
+  }
+}

@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const routes = require('./routes');
+const logger = require('./config/logger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,14 +21,46 @@ app.use('/downloads', express.static(path.join(__dirname, '../downloads')));
 // 管理后台静态文件
 app.use('/admin', express.static(path.join(__dirname, '../admin')));
 
-// 请求日志
+// 请求日志 - 同时记录到文件和终端
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  const logMessage = `${req.method} ${req.path}`;
+
+  // 记录到控制台（兼容原有格式）
+  console.log(`${new Date().toISOString()} - ${logMessage}`);
+
+  // 记录到文件
+  logger.http(logMessage, {
+    method: req.method,
+    path: req.path,
+    query: req.query,
+    ip: req.ip
+  });
+
   next();
 });
 
 // API路由
 app.use('/api', routes);
+
+// 根路径 - API 信息
+app.get('/', (req, res) => {
+  res.json({
+    name: '资料管理小程序 API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+      docs: {
+        cities: '/api/cities',
+        grades: '/api/grades',
+        subjects: '/api/subjects',
+        exams: '/api/exams',
+        admin: '/api/admin'
+      }
+    }
+  });
+});
 
 // 健康检查
 app.get('/health', (req, res) => {
