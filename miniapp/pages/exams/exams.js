@@ -500,7 +500,7 @@ Page({
         // 未开通，提示开通
         wx.showModal({
           title: '提示',
-          content: '下载需要开通该科目（50积分），是否开通？',
+          content: '下载需要开通该科目（50积分），是否开通？\n\n积分不足请加微信：wind1262918032',
           success: (modalRes) => {
             if (modalRes.confirm) {
               this.openSubject(exam)
@@ -550,7 +550,7 @@ Page({
         // 未开通，提示开通
         wx.showModal({
           title: '提示',
-          content: '下载需要开通该科目（50积分），是否开通？',
+          content: '下载需要开通该科目（50积分），是否开通？\n\n积分不足请加微信：wind1262918032',
           success: (modalRes) => {
             if (modalRes.confirm) {
               this.openSubject(exam, 'answer')
@@ -614,7 +614,14 @@ Page({
       wx.hideLoading()
       console.error('开通失败:', err)
       if (err.code === 400) {
-        wx.showToast({ title: err.message || '积分不足', icon: 'none' })
+        // 积分不足时显示模态对话框
+        wx.showModal({
+          title: '积分不足',
+          content: '您的积分不足，请联系管理员充值\n\n积分加微信：wind1262918032',
+          showCancel: false,
+          confirmText: '我知道了',
+          confirmColor: '#07c160'
+        })
       } else {
         wx.showToast({ title: err.message || '开通失败', icon: 'none' })
       }
