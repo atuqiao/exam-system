@@ -38,4 +38,13 @@
       <text class="tips-text">部分试卷包含原卷和解析版，可分别下载</text>
     </view>
   </view>
+
+  <!-- 积分充值提示 -->
+  <view class="contact-tip">
+    <view class="tip-icon">💡</view>
+    <view class="tip-content">
+      <view class="tip-title">需要更多积分？</view>
+      <view class="tip-text">积分加微信：wind1262918032</view>
+    </view>
+  </view>
 </view>

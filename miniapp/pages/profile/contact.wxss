@@ -134,3 +134,35 @@
   line-height: 1.6;
   flex: 1;
 }
+
+.contact-tip {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(253, 203, 110, 0.3);
+}
+
+.tip-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.tip-content {
+  flex: 1;
+}
+
+.tip-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #2d3436;
+  margin-bottom: 8rpx;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #636e72;
+}
