@@ -24,9 +24,9 @@ const downloadExam = async (exam, type = 'original') => {
     if (!checkRes.opened) {
       const confirm = await showConfirmDialog(
         '提示',
-        '下载需要开通该科目（50积分），是否开通？'
+        '下载需要开通该科目（50积分），是否开通？\n\n积分不足请加微信：wind1262918032'
       )
-      
+
       if (confirm) {
         await openSubject(exam)
       } else {
@@ -115,26 +115,30 @@ const openSubject = async (exam) => {
     })
 
     wx.hideLoading()
-    wx.showToast({ 
-      title: '开通成功', 
-      icon: 'success' 
+    wx.showToast({
+      title: '开通成功',
+      icon: 'success'
     })
 
   } catch (error) {
     wx.hideLoading()
-    
+
     if (error.code === 400) {
-      wx.showToast({ 
-        title: '积分不足', 
-        icon: 'none' 
+      // 积分不足时显示模态对话框
+      wx.showModal({
+        title: '积分不足',
+        content: '您的积分不足，请联系管理员充值\n\n积分加微信：wind1262918032',
+        showCancel: false,
+        confirmText: '我知道了',
+        confirmColor: '#07c160'
       })
     } else {
-      wx.showToast({ 
-        title: '开通失败', 
-        icon: 'none' 
+      wx.showToast({
+        title: '开通失败',
+        icon: 'none'
       })
     }
-    
+
     throw error
   }
 }
