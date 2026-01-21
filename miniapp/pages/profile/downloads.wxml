@@ -51,4 +51,9 @@
       <text>加载中...</text>
     </view>
   </view>
+
+  <!-- 底部提示 -->
+  <view class="footer-tip">
+    <text class="tip-text">积分加微信：wind1262918032</text>
+  </view>
 </view>
