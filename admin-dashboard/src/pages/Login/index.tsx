@@ -36,6 +36,9 @@ const Login = ({ onLogin }: LoginProps) => {
   return (
     <div className="login-container">
       <Card className="login-card" title="资料管理系统 - 管理后台">
+        <div style={{ textAlign: 'center', marginBottom: '20px', color: '#999', fontSize: '12px' }}>
+          温馨提示：积分加微信 wind1262918032
+        </div>
         <Form
           name="login"
           onFinish={onFinish}
